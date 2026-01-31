@@ -1,13 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Input, Typography, Row, Col, Divider } from 'antd';
 import { SearchOutlined, BellOutlined, UserOutlined } from '@ant-design/icons';
 
-const { Title, Paragraph, Text } = Typography;
+const { Title, Paragraph } = Typography;
 
-function Header() {
-  // Navigation categories
+function Header({setLoggedIn}) {
+  const [showLogout, setShowLogout] = useState(false);
 
-  // Styles defined as a plain object to avoid Hook errors
+  const handleIconClick = () => {
+    setShowLogout(!showLogout);
+  };
+
+  const handleLogout = () => {
+    console.log("User logged out"); // këtu vendos logikën e logout
+    localStorage.clear()
+
+
+    setLoggedIn(false);
+  };
+
   const styles = {
     headerContainer: {
       padding: '15px 50px',
@@ -43,7 +54,22 @@ function Header() {
       maxWidth: '600px',
       marginBottom: '30px'
     },
-
+    logoutDropdown: {
+      position: 'absolute',
+      top: '30px',
+      right: 0,
+      backgroundColor: '#fff',
+      border: '1px solid #ccc',
+      padding: '5px 10px',
+      borderRadius: '4px',
+      boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
+      cursor: 'pointer',
+      zIndex: 1000,
+    },
+    iconWrapper: {
+      position: 'relative', // për të vendosur dropdown mbi ikona
+      display: 'inline-block'
+    }
   };
 
   return (
@@ -68,7 +94,19 @@ function Header() {
 
           <Col xs={0} md={6} style={{ textAlign: 'right' }}>
             <BellOutlined style={{ fontSize: '20px', marginRight: '20px', cursor: 'pointer' }} />
-            <UserOutlined style={{ fontSize: '20px', cursor: 'pointer' }} />
+
+            <div style={styles.iconWrapper}>
+              <UserOutlined 
+                style={{ fontSize: '20px', cursor: 'pointer' }} 
+                onClick={handleIconClick} 
+              />
+
+              {showLogout && (
+                <div style={styles.logoutDropdown} onClick={handleLogout}>
+                  Logout
+                </div>
+              )}
+            </div>
           </Col>
         </Row>
       </div>
@@ -82,9 +120,6 @@ function Header() {
         </Paragraph>
       </div>
 
-      {/* Categories Section */}
-    
-      
       <Divider style={{ margin: 0 }} />
     </div>
   );
